@@ -1,0 +1,7 @@
+name "domains"
+description "Domain Manager"
+dependency "yamlserialized" version="~>0.5.0"
+dependency "ae:sys-net-curl" version="~>0.0.2513"
+dependency "ae" version="~>0.0.2513"
+dependency "dyaml" version="~>0.8.0"
+targetType "executable"

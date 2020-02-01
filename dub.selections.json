@@ -1,0 +1,10 @@
+{
+	"fileVersion": 1,
+	"versions": {
+		"ae": "0.0.2513",
+		"dunit": "1.0.15",
+		"dyaml": "0.8.0",
+		"tinyendian": "0.2.0",
+		"yamlserialized": "0.5.0"
+	}
+}
