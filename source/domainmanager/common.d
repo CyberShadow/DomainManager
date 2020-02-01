@@ -1,24 +1,33 @@
 module domainmanager.common;
 
+struct Nameserver
+{
+	string hostname;
+	string[] ips;
+}
+
 struct Domain
 {
 	// name is key
 	bool locked;
 	bool privacyEnabled;
 	bool autoRenew;
-	string[] nameservers;
+	Nameserver[] nameservers;
 }
 
-struct RegistrarState
-{
-	Domain[string] domains;
-}
+alias RegistrarState = Domain[string];
 
 alias State = RegistrarState[string /*registrar*/];
 
+struct Action
+{
+	string description;
+	void delegate() execute;
+}
+
 class Registrar
 {
-	abstract RegistrarState getState();
+	abstract Action[] putState(RegistrarState);
 }
 
 Registrar[string] registrars;
