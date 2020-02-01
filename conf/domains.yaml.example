@@ -1,0 +1,26 @@
+defs:
+
+  - &my_nameservers
+    - hostname: a.ns.example.com
+      ips:
+      - 1.2.3.4
+      - 12:34::56:78
+    - hostname: f.ns.example.com
+      ips:
+      - 5.6.7.8
+      - 90:ab::cd:ef
+
+domains:
+  namesilo:
+
+    example.com:
+      locked: true
+      autoRenew: true
+      privacyEnabled: true
+      nameservers: *my_nameservers
+
+    example.org:
+      locked: false
+      autoRenew: false
+      privacyEnabled: false
+      nameservers: *my_nameservers
