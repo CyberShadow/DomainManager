@@ -75,3 +75,10 @@ Unsupported registrars
 - namecheap.com 
 
   No way to set glue records via API.
+
+TODO / Roadmap
+--------------
+
+- Add configuration of WHOIS / contact information
+- Add configuration of DNSSEC
+- Add more registrars
