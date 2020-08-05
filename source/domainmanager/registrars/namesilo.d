@@ -89,15 +89,23 @@ final class NameSilo : Registrar
 						.map!(ns => ns.hostname)
 						.array
 					),
-				},
-				registeredNameservers : (
-					rdom.nameservers
-					.filter!(ns => ns.ips.length > 0)
-					.map!(ns => tuple(ns.hostname, InternalState.Domain.RegisteredNameserver(ns.ips)))
-					.assocArray
-				),
+				}
 			};
 			i.domains[name] = idom;
+		}
+		foreach (ns; r.byValue.map!(v => v.nameservers).joiner.filter!(ns => ns.ips.length > 0))
+		{
+			auto nameParts = ns.hostname.split(".");
+			auto domain = nameParts[$-2 .. $].join(".");
+			auto subdomain = nameParts[0 .. $-2].join(".");
+			auto idom = domain in i.domains;
+			if (!idom)
+				continue; // Can't register external nameserver
+			auto ins = InternalState.Domain.RegisteredNameserver(ns.ips.map!normalizeIP.array);
+			if (auto pins = subdomain in idom.registeredNameservers)
+				enforce(*pins == ins, "Conflicting registered nameserver: %s != %s".format(ins, *pins));
+			else
+				idom.registeredNameservers[subdomain] = ins;
 		}
 		return i;
 	}
