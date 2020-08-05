@@ -56,6 +56,12 @@ final class NameSilo : Registrar
 	{
 		struct Domain
 		{
+			struct RegisteredNameserver
+			{
+				string[] ips;
+			}
+			RegisteredNameserver[string] registeredNameservers;
+
 			struct Info
 			{
 				bool locked;
@@ -64,12 +70,6 @@ final class NameSilo : Registrar
 				string[] nameservers;
 			}
 			Info info;
-
-			struct RegisteredNameserver
-			{
-				string[] ips;
-			}
-			RegisteredNameserver[string] registeredNameservers;
 		}
 		Domain[string] domains;
 	}
@@ -180,8 +180,8 @@ final class NameSilo : Registrar
 		InternalState state;
 		foreach (domain; listDomains)
 			state.domains[domain] = InternalState.Domain(
-				getDomainInfo(domain),
 				listRegisteredNameServers(domain),
+				getDomainInfo(domain),
 			);
 		return state;
 	}
