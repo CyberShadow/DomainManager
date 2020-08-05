@@ -17,6 +17,7 @@
 module domainmanager.registrars.namesilo;
 
 import std.algorithm.iteration;
+import std.algorithm.searching;
 import std.algorithm.sorting;
 import std.array;
 import std.conv : to;
@@ -72,6 +73,48 @@ final class NameSilo : Registrar
 			Info info;
 		}
 		Domain[string] domains;
+	}
+
+	private static string normalizeIP(string ip)
+	{
+		if (ip.canFind(':'))
+		{
+			// IPv6
+			auto halves = ip.findSplit("::");
+			string[8] groups;
+			auto group0 = halves[0].split(":");
+			auto group1 = halves[2].split(":");
+			enforce(group0.length + group1.length <= groups.length, "Too many groups");
+			groups[0 .. group0.length] = group0;
+			groups[$ - group1.length .. $] = group1;
+			foreach (ref group; groups)
+			{
+				group = group.toLower();
+				foreach (ref c; group)
+					enforce((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'), "Bad IPv6 digit");
+				while (group.startsWith('0'))
+					group = group[1..$];
+				if (!group.length)
+					group = "0";
+			}
+			return groups[].join(':');
+		}
+		else
+		{
+			// IPv4
+			auto groups = ip.split(".");
+			enforce(groups.length == 4);
+			foreach (ref group; groups)
+			{
+				foreach (ref c; group)
+					enforce(c >= '0' && c <= '9', "Bad IPv4 digit");
+				while (group.startsWith('0'))
+					group = group[1..$];
+				if (!group.length)
+					group = "0";
+			}
+			return groups[].join('.');
+		}
 	}
 
 	private InternalState convertState(RegistrarState r)
